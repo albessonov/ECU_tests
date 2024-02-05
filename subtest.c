@@ -16,8 +16,8 @@ struct timespec mt1, mt2;
 long int tt;
 void uart (uint8_t test_pattern)//1,2-срабатывание; 3,4-несрабатывание
 {
-char pathX[]="/home/albessonov/tests/c_inserts/****_X.txt";
-char pathY[]="/home/albessonov/tests/c_inserts/****_Y.txt";
+char pathX[]="/home/albessonov/tests/c_inserts/Front XGF 100% 50kmh_?.txt";
+char pathY[]="/home/albessonov/tests/c_inserts/Front XGF 100% 50kmh_?.txt";
 if(test_pattern==1)
 {
 strcpy(pathX,path1885X);
