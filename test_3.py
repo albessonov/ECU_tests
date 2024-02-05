@@ -2,7 +2,13 @@ import RPi.GPIO as GPIO
 import can
 import time
 import subprocess
+import threading
 import struct
+from ctypes import *
+so_file = "/home/albessonov/tests/c_inserts/subtest.so"
+cfunc = CDLL(so_file)
+def acc():
+    cfunc.uart(1)
 '''def periodic_send(msg, bus):
     task = bus.send_periodic(msg, 0.100)
     assert isinstance(task, can.CyclicSendTaskABC)
@@ -13,9 +19,8 @@ def test3():
  bus=can.Bus(channel='can0',receive_own_messages=True,interface='socketcan',can_filters=filters)
  GPIO.setmode(GPIO.BCM)
  GPIO.setup(20, GPIO.OUT,initial=GPIO.HIGH) #turn on the power
- p=subprocess.Popen("/home/albessonov/accelerometer/acc/uart")#starting accelerometer
- #msg = can.Message(arbitration_id=0x5D7, data=[0, 0, 0, 0, 0, 0, 0x1e, 0xFF], is_extended_id=False) #vehicle speed 79.35 km/h
- #periodic_send(msg,bus)
+ accel=threading.Thread(target=acc)
+ accel.start()
  k=subprocess.Popen(['candump','can0,023:7FF', '-td', '-n50'],stdout=subprocess.PIPE)
  for i in range(0,50):
   line = k.stdout.readline()
