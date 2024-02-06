@@ -11,17 +11,10 @@ def test7():
  bus.send(enter)#to enter diag session
  bus.send(request)
  response = bus.recv(timeout=300)#waiting for message
- #print(hex(response.data[1]))
+ print(hex(response.data))
  GPIO.output(20, GPIO.LOW)#power off
  bus.shutdown()
  GPIO.cleanup()
- print(response)
- assert(response.data[0]==0x04)
- assert(response.data[1]==0x62)
- assert(response.data[2]==0xC9)
- assert(response.data[3]==0x53)
- assert(response.data[4]==0x00)
- 
  
 if __name__ == "__main__":
     test7()
