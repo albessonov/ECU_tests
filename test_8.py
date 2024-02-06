@@ -52,8 +52,10 @@ def test8():
  bus.send(sendkey)
  sendkey_response=bus.recv(timeout=30)
  print(sendkey_response.data)
- #assert(sendkey_response.data[1]==0x67)#positive response
- #assert(sendkey_response.data[2]==0x2)#security level 2 is set
+ if(sendkey_response.data[1]==0x67 and sendkey_response.data[2]==0x2):#positive response
+     print("Success")
+ else:
+     print("Fail")
  bus.shutdown()
  
 if __name__ == "__main__":

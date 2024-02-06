@@ -6,7 +6,7 @@ import os
 from signal import SIGKILL
 import subprocess
 import time
-so_file = "/home/albessonov/tests/c_inserts/subtest.so"
+so_file = "/home/pi/Desktop/tests/c_inserts/subtest.so"
 cfunc = CDLL(so_file)
 def acc():
     cfunc.uart(3)
