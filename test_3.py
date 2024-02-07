@@ -15,7 +15,7 @@ def test3():
  GPIO.setup(20, GPIO.OUT,initial=GPIO.HIGH) #turn on the power
  accel=threading.Thread(target=acc)
  accel.start()
- k=subprocess.Popen(['candump','can0,023:7FF', '-td', '-n50'],stdout=subprocess.PIPE)
+ k=subprocess.Popen(['candump','can0,023:7FF', '-td', '-n50','-T50000'],stdout=subprocess.PIPE)
  for i in range(0,50):
   line = k.stdout.readline()
   a=line[4:11]
