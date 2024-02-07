@@ -53,9 +53,9 @@ def test8():
  sendkey_response=bus.recv(timeout=30)
  print(sendkey_response.data)
  if(sendkey_response.data[1]==0x67 and sendkey_response.data[2]==0x2):#positive response
-     print("Success")
+     print("\033[32m Success")
  else:
-     print("Fail")
+     print("\033[31m Fail")
  bus.shutdown()
  
 if __name__ == "__main__":

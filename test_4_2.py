@@ -1,13 +1,14 @@
 import RPi.GPIO as GPIO
-import can
-from ctypes import *
+import ctypes as ct
 import threading
 import os
 from signal import SIGKILL
 import subprocess
 import time
+TTF=30000 #??????
 so_file = "/home/pi/Desktop/tests/c_inserts/subtest.so"
-cfunc = CDLL(so_file)
+cfunc = ct.CDLL(so_file)
+tt = ct.c_long.in_dll(cfunc, 'tt')
 def acc():
     cfunc.uart(2)
 '''def periodic_send(msg, bus):
@@ -24,11 +25,15 @@ def test_4():
  #periodic_send(speed,bus)
  accel=threading.Thread(target=acc)
  accel.start()
- time.sleep(10)
- '''msg=bus.recv(timeout=30)
- #print(msg)
- bus.shutdown()'''
+ time.sleep(5)#изменить
+ print("TTF,µS:",tt.value/1000)
+ if(tt.value<TTF+3000 and tt.value>TTF-3000):
+     print("\033[32m Success")
+ else:
+     print("\033[31m Fail")    
  GPIO.cleanup()
+ #cfunc.terminate()
  os.kill(pid, SIGKILL)
+ 
 if __name__ == '__main__':
     test_4()

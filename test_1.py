@@ -1,9 +1,9 @@
 import RPi.GPIO as GPIO
 import time
 import can
-import pytest
+
 def test_1():
- bus=can.Bus(channel='can0',receive_own_messages=True,interface='socketcan')
+ bus=can.Bus(channel='can0',receive_own_messages=False,interface='socketcan')
  GPIO.setmode(GPIO.BCM)
  GPIO.setup(20, GPIO.OUT,initial=GPIO.HIGH) #turn on the power
  time.sleep(1)
@@ -15,7 +15,7 @@ def test_1():
  GPIO.cleanup()
  print(received-on)
 if __name__ == '__main__':
-   test_2()
+   test_1()
 
 
 
