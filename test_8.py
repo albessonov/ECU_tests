@@ -39,24 +39,24 @@ def test8():
  response = bus.recv(timeout=30)#waiting for message
  assert(response.data[1]==0x67)#checking for positive response to request seed
  seed=(response.data[3]<<24)|(response.data[4]<<16)|(response.data[5]<<8)|(response.data[6])
- print(hex(seed))
+ print("seed:",hex(seed))
  key=keygen(seed,rnd)
  key1=key&0xffffffff
- print(hex(key1))
+ print("key:",hex(key1))
  firstbyte=key1>>24
  secondbyte=(key1>>16&0xff)
  thirdbyte=(key1>>8&0xff)
  fourthbyte=key1&0xff
- print(hex(firstbyte),hex(secondbyte),hex(thirdbyte),hex(fourthbyte))
+ #print(hex(firstbyte),hex(secondbyte),hex(thirdbyte),hex(fourthbyte))
  sendkey=can.Message(arbitration_id=0x752,data=[0x6,0x27,0x02,firstbyte,secondbyte,thirdbyte,fourthbyte],is_extended_id=False)
  bus.send(sendkey)
- sendkey_response=bus.recv(timeout=900)
- if(sendkey_response.data[1]==0x67 and sendkey_response.data[2]==0x2): #positive response  and security level 2 is set
-  print("\033[32m Success")
+ sendkey_response=bus.recv(timeout=30)
+ print(sendkey_response.data)
+ if(sendkey_response.data[1]==0x67 and sendkey_response.data[2]==0x2):#positive response
+     print("\033[32m Success")
  else:
-     print("\033[31m Fail")  
+     print("\033[31m Fail")
  bus.shutdown()
  
 if __name__ == "__main__":
     test8()
-

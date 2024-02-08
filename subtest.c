@@ -16,8 +16,8 @@ struct timespec mt1, mt2;
 long int tt;
 void uart (uint8_t test_pattern)//1,2-срабатывание; 3,4-несрабатывание
 {
-char pathX[]="/home/albessonov/tests/c_inserts/Front XGF 100% 50kmh_?.txt";
-char pathY[]="/home/albessonov/tests/c_inserts/Front XGF 100% 50kmh_?.txt";
+char pathX[]="/home/albessonov/tests/c_inserts/****_X.txt";
+char pathY[]="/home/albessonov/tests/c_inserts/****_Y.txt";
 if(test_pattern==1)
 {
 strcpy(pathX,path1885X);
@@ -94,12 +94,12 @@ while(1)
 {
 if(timeX==0){
 clock_gettime (CLOCK_REALTIME, &mt1);
+//printf("%ld\n",mt1.tv_nsec);
 }
 if(ctr0<0&&ctr2<0) break;
     memset(RXbuf, 0, UART_INPUT_MAX_SIZE);// clean the buf for next reception
     if(serialDataAvail (uart1)!=-1)
     read(uart1,RXbuf,4);
-    //printf("%X %X %X %X\n",RXbuf[0],RXbuf[1],RXbuf[2],RXbuf[3]);
 if(memcmp(RXbuf,Register_Read_cmd,sizeof(Register_Read_cmd))==0)
      {
       write(uart1, Register_Read_Response_cmd, sizeof(Register_Read_Response_cmd));
@@ -114,7 +114,7 @@ else if(memcmp(RXbuf,Register_Write_cmd,sizeof(Register_Write_cmd))==0)
 	 }
 else if(memcmp(RXbuf,Request0x0cmd,sizeof(Request0x0cmd))==0)
      {
-         printf("X:%f\n ",timeX);
+         printf("X:%f\n",timeX);
          timeX+=0.5;
 		 uint8_t valH0,valL0,valL,valH;
 	     fseek(fp0x0,ctr0,0);
@@ -147,7 +147,7 @@ else if(memcmp(RXbuf,Request0x0cmd,sizeof(Request0x0cmd))==0)
 	 }
 else if(memcmp(RXbuf,Request0x2cmd,sizeof(Request0x2cmd))==0)
      {
-      printf("Y:%f\n ",timeY);
+      printf("Y:%f\n",timeY);
       timeY+=0.5;
 	  uint8_t valH0,valL0,valH,valL;
 	  fseek(fp0x2,ctr2,0);
@@ -185,7 +185,7 @@ void aFunction(int gpio, int level, uint32_t tick)
 {
    clock_gettime (CLOCK_REALTIME, &mt2);
    tt=1000000000*(mt2.tv_sec - mt1.tv_sec)+(mt2.tv_nsec - mt1.tv_nsec);
-   //printf("Time us:%ld\n", tt/1000);
-   gpioTerminate();
+   printf("Time us:%ld\n", tt/1000);
+   //gpioTerminate();
    exit(0);
 }
