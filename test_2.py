@@ -6,8 +6,6 @@ import subprocess
 
 def test_2():
  timelist = [] 
- GPIO.setmode(GPIO.BCM)
- GPIO.setup(20, GPIO.OUT,initial=GPIO.HIGH) #turn on the power
  k=subprocess.Popen(['candump','can0,653:7FF', '-td', '-n50','-T50000'],stdout=subprocess.PIPE)
  for i in range(0,50):
   line = k.stdout.readline()
@@ -25,7 +23,6 @@ def test_2():
      print("\033[32m Success")
  else:
      print("\033[31m Fail")      
- GPIO.cleanup()
  
 
 if __name__ == '__main__':

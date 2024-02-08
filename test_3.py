@@ -11,8 +11,6 @@ def acc():
     cfunc.uart(1)
 def test3():
  timelist = [] 
- GPIO.setmode(GPIO.BCM)
- GPIO.setup(20, GPIO.OUT,initial=GPIO.HIGH) #turn on the power
  accel=threading.Thread(target=acc)
  accel.start()
  k=subprocess.Popen(['candump','can0,023:7FF', '-td', '-n50','-T50000'],stdout=subprocess.PIPE)
@@ -28,7 +26,6 @@ def test3():
    if(timelist[i]>=0.0044 or timelist[i]<=0.0036):
     ctr+=1
  k.kill()    
- GPIO.cleanup()
  if(ctr==0):
      print("\033[32m Success")
  else:

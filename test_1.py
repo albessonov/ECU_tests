@@ -14,6 +14,11 @@ def test_1():
  bus.shutdown()
  GPIO.cleanup()
  print(received-on)
+ if(received-on<0.3):
+     print("\033[32m Success")
+ else:
+     print("\033[31m Fail")
+
 if __name__ == '__main__':
    test_1()
 
