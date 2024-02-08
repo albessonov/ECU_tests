@@ -16,8 +16,9 @@ struct timespec mt1, mt2;
 long int tt;
 void uart (uint8_t test_pattern)//1,2-срабатывание; 3,4-несрабатывание
 {
-char pathX[]="/home/albessonov/tests/c_inserts/****_X.txt";
-char pathY[]="/home/albessonov/tests/c_inserts/****_Y.txt";
+char pathX[]="/home/albessonov/tests/c_inserts/Front XGF 100% 50kmh_?.txt";
+char pathY[]="/home/albessonov/tests/c_inserts/Front XGF 100% 50kmh_?.txt";
+
 if(test_pattern==1)
 {
 strcpy(pathX,path1885X);
@@ -51,7 +52,7 @@ gpioSetISRFunc(21,FALLING_EDGE,-1,aFunction);
 ///////////
 double Num;
 float timeX=-100,timeY=-100;
-unsigned uart1=serialOpen("/dev/ttyAMA0",921600);
+unsigned uart1=serialOpen("/dev/ttyAMA0",1500000);
 
 struct Register_Access_Command Register_Read={REGISTER_READ_COMMAND,REGISTER_READ_ADDRESS,REGISTER_READ_DATA,0b00000000};
 struct Register_Access_Command Register_Write={REGISTER_WRITE_COMMAND,REGISTER_READ_ADDRESS,REGISTER_READ_DATA,0b00000000};
@@ -185,7 +186,7 @@ void aFunction(int gpio, int level, uint32_t tick)
 {
    clock_gettime (CLOCK_REALTIME, &mt2);
    tt=1000000000*(mt2.tv_sec - mt1.tv_sec)+(mt2.tv_nsec - mt1.tv_nsec);
-   printf("Time us:%ld\n", tt/1000);
+   //printf("Time us:%ld\n", tt/1000);
    //gpioTerminate();
    exit(0);
 }
