@@ -1,4 +1,3 @@
-import RPi.GPIO as GPIO
 import ctypes as ct
 import threading
 import os
@@ -6,7 +5,7 @@ from signal import SIGKILL
 import subprocess
 import time
 TTF=30000 
-so_file = "/home/pi/Desktop/tests/c_inserts/subtest.so"
+so_file = "/home/albessonov/tests/c_inserts/subtest.so"
 cfunc = ct.CDLL(so_file)
 tt = ct.c_long.in_dll(cfunc, 'tt')
 def acc():
