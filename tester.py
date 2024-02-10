@@ -7,6 +7,7 @@ import struct
 import RPi.GPIO as GPIO
 import can
 from ctypes import *
+import _ctypes
 import os
 from signal import SIGQUIT
 import random
@@ -22,13 +23,19 @@ class Tester(QObject):
         self.is_emulating = False
         self.stop_requested = False
         self.pattern = 1
-        self.so_file = "/home/pi/Desktop/tests/c_inserts/subtest.so"
+        self.so_filet3 = "/home/pi/Desktop/tests/c_inserts/subtest.so"
         if not self.is_emulating:
-            self.cfunc = CDLL(self.so_file)
+            self.cfunct3 = CDLL(self.so_filet3)
             
     def acc(self, pattern):
         self.cfunc.uart(pattern)
-        
+    def isLoaded(self, lib):#
+        libp = os.path.abspath(lib)#
+        ret = os.system("lsof -p %d | grep %s > /dev/null" % (os.getpid(), libp))#
+        return (ret == 0)#
+    def dlclose(self,handle):#
+        libdl = CDLL("/lib/aarch64-linux-gnu/libdl.so.2")#
+        libdl.dlclose(handle) #   
     def keygen(self, seed, rnd):
         key=seed
         Mask03=0xD2944523
@@ -86,8 +93,9 @@ class Tester(QObject):
             bus.shutdown()
             GPIO.cleanup()
             tim = received-on
-            logging.info(tim)
-            results["val"] = f"{round(tim, 3)} мс"
+            print(received-on)
+            logging.info(1000*tim)
+            results["val"] = f"{round(1000*tim, 3)} мс"
             results["can"] = f"ID:      653    S Rx                DL:  4    00 c0 00 00                 Channel: can0"
             if(received-on<0.3):
                 logging.info("TEST 1 Success")
@@ -155,7 +163,7 @@ class Tester(QObject):
             results = dict()
             timelist = [] 
             test_pattern = 1
-            accel=threading.Thread(target=self.acc,args=(test_pattern,))
+            accel=threading.Thread(target=self.cfunct3.uart,args=(test_pattern,))
             accel.start()
             k=subprocess.Popen(['candump','can0,023:7FF', '-td', '-n50','-T50000'],stdout=subprocess.PIPE)
             for i in range(0,50):
@@ -186,6 +194,17 @@ class Tester(QObject):
 
     def test_4(self):
         test_pattern = self.pattern
+        if(test_pattern==1):
+            so_file = "/home/pi/Desktop/tests/c_inserts/subtest1.so"#
+        elif(test_pattern==2):
+            so_file = "/home/pi/Desktop/tests/c_inserts/subtest2.so"#
+        elif(test_pattern==3):
+            so_file = "/home/pi/Desktop/tests/c_inserts/subtest3.so"#
+        elif(test_pattern==4):
+            so_file = "/home/pi/Desktop/tests/c_inserts/subtest4.so"#
+        else:
+            print("wrong pattern")            
+        cfunc = CDLL(so_file)#
         if self.is_emulating:
             time.sleep(1)
             results = dict()
@@ -193,9 +212,9 @@ class Tester(QObject):
             self.progress.emit(results)
         else:
             results = dict()
-            tt = c_long.in_dll(self.cfunc, 'tt')
-            timeX = c_float.in_dll(self.cfunc, 'timeX')
-            flag=c_bool.in_dll(self.cfunc, 'flag')
+            tt = c_long.in_dll(cfunc, 'tt')#
+            timeX = c_float.in_dll(cfunc, 'timeX')#
+            flag=c_bool.in_dll(cfunc, 'flag')#
             if(test_pattern==1):
                 TTF=30000
             elif(test_pattern==2):    
@@ -203,7 +222,7 @@ class Tester(QObject):
             else:
                 TTF=0
             pid=os.getpid()
-            accel=threading.Thread(target=self.acc,args=(test_pattern,))
+            accel=threading.Thread(target=cfunc.uart,args=(test_pattern,))
             accel.start()
             if(test_pattern==1 or test_pattern==2):
                 while True:
@@ -229,6 +248,10 @@ class Tester(QObject):
             self.progress.emit(results)
             #os.kill(pid, SIGQUIT)
             flag=0
+            time.sleep(20)
+            _ctypes.dlclose(cfunc._handle)
+            print("ready")
+            
 
     def test_5(self):
         if self.is_emulating:
