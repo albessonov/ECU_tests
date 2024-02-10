@@ -11,10 +11,13 @@
 #include <math.h>
 #include <time.h>
 #include "pigpio.h"
+#include "stdbool.h"
 void aFunction(int gpio, int level, uint32_t tick);
 struct timespec mt1, mt2;
 long int tt;
-void uart (uint8_t test_pattern)//1,2-срабатывание; 3,4-несрабатывание
+float timeX=-100,timeY=-100;
+bool flag=0;
+uint8_t uart (uint8_t test_pattern)//1,2-срабатывание; 3,4-несрабатывание
 {
 char pathX[]="/home/albessonov/tests/c_inserts/Front XGF 100% 50kmh_?.txt";
 char pathY[]="/home/albessonov/tests/c_inserts/Front XGF 100% 50kmh_?.txt";
@@ -46,12 +49,12 @@ exit(1);
 }
 //part which is responsible for capture edge
 gpioInitialise();
+gpioSetMode(19,PI_OUTPUT);
 gpioSetMode(21,PI_INPUT);
 gpioSetPullUpDown(21,PI_PUD_DOWN);
 gpioSetISRFunc(21,FALLING_EDGE,-1,aFunction);
 ///////////
 double Num;
-float timeX=-100,timeY=-100;
 unsigned uart1=serialOpen("/dev/ttyAMA0",1500000);
 
 struct Register_Access_Command Register_Read={REGISTER_READ_COMMAND,REGISTER_READ_ADDRESS,REGISTER_READ_DATA,0b00000000};
@@ -93,8 +96,15 @@ fp0x2 = fopen(pathY, "r");
 	  printf("Error Y");
 while(1)
 {
+if(flag==1)
+{
+gpioTerminate();
+break;
+}
 if(timeX==0){
 clock_gettime (CLOCK_REALTIME, &mt1);
+gpioWrite(19,1);
+
 //printf("%ld\n",mt1.tv_nsec);
 }
 if(ctr0<0&&ctr2<0) break;
@@ -179,7 +189,9 @@ else if(memcmp(RXbuf,Request0x2cmd,sizeof(Request0x2cmd))==0)
       write(uart1, resp, sizeof(resp));
       ctr2+=mov2;
      }
+
 }
+return 0;
 }
 
 void aFunction(int gpio, int level, uint32_t tick)
@@ -187,6 +199,7 @@ void aFunction(int gpio, int level, uint32_t tick)
    clock_gettime (CLOCK_REALTIME, &mt2);
    tt=1000000000*(mt2.tv_sec - mt1.tv_sec)+(mt2.tv_nsec - mt1.tv_nsec);
    //printf("Time us:%ld\n", tt/1000);
-   //gpioTerminate();
-   exit(0);
+   flag=1;
+
 }
+
